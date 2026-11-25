@@ -1,0 +1,9 @@
+{
+  "name": "AMP Lab 06",
+  "short_name": "AMP Lab 06",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#365b71",
+  "description": "Advanced Mobile Programming AMP Lab 06"
+}
