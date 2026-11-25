@@ -1,0 +1,49 @@
+name: Complete Flutter lab projects
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  complete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Flutter 3.41.9
+        run: |
+          git clone --depth 1 --branch 3.41.9 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Restore and validate all ten projects
+        shell: bash
+        run: |
+          export FLUTTER_SUPPRESS_ANALYTICS=true
+          flutter --version
+          for lab in lab-{01..10}; do
+            echo "::group::$lab"
+            (
+              cd "$lab"
+              name=$(sed -n 's/^name: //p' pubspec.yaml)
+              test -n "$name"
+              test ! -e test/widget_test.dart
+              test ! -e analysis_options.yaml
+              flutter create --platforms=android --org com.amplabs --project-name "$name" --no-pub .
+              rm -f test/widget_test.dart analysis_options.yaml
+              git diff --exit-code -- lib pubspec.yaml web
+              flutter pub get
+              test -s pubspec.lock
+              flutter analyze --no-pub
+              sed -i '/^For Android, generate the native runner/c\For Android, connect a device or start an emulator, then run flutter devices and flutter run -d DEVICE_ID.' README.md
+            )
+            echo "::endgroup::"
+          done
+      - name: Commit Android runners and lockfiles
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- lab-{01..10}
+          for lab in lab-{01..10}; do
+            git ls-files --error-unmatch "$lab/pubspec.lock" "$lab/android/app/src/main/AndroidManifest.xml" > /dev/null
+          done
+          git archive --format=zip --prefix=amp-labs/ --output=AMP_Flutter_Labs.zip "$(git write-tree)" README.md lab-{01..10}
+          git add -- AMP_Flutter_Labs.zip
+          git commit -m 'Complete Flutter projects with Android runners and resolved dependencies'
+          git push origin HEAD:main
