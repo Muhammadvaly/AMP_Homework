@@ -8,7 +8,7 @@ flutter analyze
 flutter run -d chrome
 ```
 
-For Android, generate the native runner with `flutter create --platforms=android --org com.amplabs .` from this directory. Then use `flutter devices` and `flutter run -d DEVICE_ID`.
+For Android, connect a device or start an emulator, then run flutter devices and flutter run -d DEVICE_ID.
 
 The widget tree starts with `CourseApp → MaterialApp → WelcomePage → Scaffold`. The body contains a centered scrolling Column, course information, a counter button, and a locally themed reset button.
 

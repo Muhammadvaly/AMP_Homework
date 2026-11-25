@@ -8,6 +8,6 @@ flutter analyze
 flutter run -d chrome
 ```
 
-For Android, generate the native runner with `flutter create --platforms=android --org com.amplabs .` from this directory. Then use `flutter devices` and `flutter run -d DEVICE_ID`.
+For Android, connect a device or start an emulator, then run flutter devices and flutter run -d DEVICE_ID.
 
 Open at phone and tablet widths. Padding is inside a Container, and margin is exterior space. Row's main axis is horizontal, and Column's main axis is vertical. Change the alignment to see how space distribution changes. To reproduce a Row overflow locally, temporarily remove Expanded from the long email, then restore it. SingleChildScrollView enables vertical scrolling for the longer content.
